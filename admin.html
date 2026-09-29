@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de" class="dark">
 <head>
   <meta charset="UTF-8">
@@ -43,21 +43,21 @@
       container.innerHTML = '';
       
       for(const [key, item] of Object.entries(currentStock)) {
-        const html = \
+        const html = `
           <div class="bg-black/50 p-6 rounded-xl border border-white/5">
-            <h3 class="text-xl font-bold mb-4 text-white">\</h3>
+            <h3 class="text-xl font-bold mb-4 text-white">${item.name}</h3>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Stückzahl auf Lager (0 = Ausverkauft):</label>
-                <input type="number" id="stock-\" value="\" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500">
+                <input type="number" id="stock-${key}" value="${item.stock}" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500">
               </div>
               <div>
                 <label class="block text-xs text-zinc-400 mb-1">Wann wieder da? (z.B. "Morgen"):</label>
-                <input type="text" id="restock-\" value="\" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="Nur wenn 0...">
+                <input type="text" id="restock-${key}" value="${item.restockDate}" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="Nur wenn 0...">
               </div>
             </div>
           </div>
-        \;
+        `;
         container.innerHTML += html;
       }
     }
@@ -73,7 +73,7 @@
       }
 
       const status = document.getElementById('status-msg');
-      status.className = 'text-center mt-4 font-bold text-zinc-400';
+      status.className = 'text-center mt-4 font-bold text-zinc-400 block';
       status.innerText = 'Speichert...';
 
       try {

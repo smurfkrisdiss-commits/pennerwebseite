@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
@@ -7,6 +7,11 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const stockFile = path.join(__dirname, 'stock.json');
+
+// Route for /admin without .html
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
 
 // Default stock if file doesn't exist
 let stockData = {
@@ -21,18 +26,26 @@ let stockData = {
 // Load from file if exists
 if (fs.existsSync(stockFile)) {
   try {
-    stockData = JSON.parse(fs.readFileSync(stockFile, 'utf8'));
-    // Migration for old bangking
-    if (stockData['bangking']) {
-      stockData['bangking-sw'] = { name: "Bang King (Strawberry Watermelon)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
-      stockData['bangking-sb'] = { name: "Bang King (Strawberry Banana)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
-      stockData['bangking-ll'] = { name: "Bang King (Lemon Lime)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
-      delete stockData['bangking'];
-      fs.writeFileSync(stockFile, JSON.stringify(stockData, null, 2));
+    const rawData = fs.readFileSync(stockFile, 'utf8').trim();
+    if (rawData) {
+      stockData = JSON.parse(rawData);
+      // Migration for old bangking
+      if (stockData['bangking']) {
+        stockData['bangking-sw'] = { name: "Bang King (Strawberry Watermelon)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
+        stockData['bangking-sb'] = { name: "Bang King (Strawberry Banana)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
+        stockData['bangking-ll'] = { name: "Bang King (Lemon Lime)", stock: stockData['bangking'].stock, restockDate: stockData['bangking'].restockDate };
+        delete stockData['bangking'];
+        fs.writeFileSync(stockFile, JSON.stringify(stockData, null, 2));
+      }
     }
   } catch (err) {
-    console.error("Error reading stock.json", err);
+    console.error("Error reading stock.json", err.message);
+    // Overwrite corrupted file with defaults
+    fs.writeFileSync(stockFile, JSON.stringify(stockData, null, 2));
   }
+} else {
+  // Create if it doesn't exist
+  fs.writeFileSync(stockFile, JSON.stringify(stockData, null, 2));
 }
 
 app.get('/api/stock', (req, res) => {
@@ -41,7 +54,7 @@ app.get('/api/stock', (req, res) => {
 
 app.post('/api/stock', (req, res) => {
   const { password, newStock } = req.body;
-  if (password !== 'Kristian2010!') {
+  if (password !== '1200') {
     return res.status(401).json({ error: 'Falsches Passwort!' });
   }
   
