@@ -1,0 +1,8 @@
+﻿{
+  "vape": { "name": "Premium Vape", "stock": 15, "restockDate": "" },
+  "liquid": { "name": "THC Liquid", "stock": 8, "restockDate": "" },
+  "bangking-sw": { "name": "Bang King (Strawberry Watermelon)", "stock": 10, "restockDate": "" },
+  "bangking-sb": { "name": "Bang King (Strawberry Banana)", "stock": 10, "restockDate": "" },
+  "bangking-ll": { "name": "Bang King (Lemon Lime)", "stock": 10, "restockDate": "" },
+  "edibles": { "name": "Delta 9 Gummy Cherri", "stock": 5, "restockDate": "" }
+}

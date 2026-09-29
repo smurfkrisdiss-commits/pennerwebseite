@@ -1,0 +1,978 @@
+﻿<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIEFERANT STRAUBING | Premium Vapes & 🍃</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- GSAP & Lenis for Pro-Max Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  <!-- Vanilla Tilt for 3D Hover Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: #050505; 
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+    .active-tab {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white !important;
+      border-color: transparent !important;
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.5);
+      transform: scale(1.05);
+    }
+    
+    .tab-content { display: none; }
+    .tab-content.active { display: grid; }
+    
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); } 
+    }
+    .animate-marquee {
+      animation: marquee 35s linear infinite;
+    }
+
+    /* Ultimate Glassmorphism (Ultraglass) */
+    .glass-card {
+      background: linear-gradient(145deg, rgba(24, 24, 27, 0.4), rgba(9, 9, 11, 0.6));
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transform-style: preserve-3d;
+    }
+
+    .glass-card-inner {
+      transform: translateZ(30px);
+    }
+    
+    /* Animated Background Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+    
+    .img-transition {
+      transition: opacity 0.4s ease-in-out, transform 0.5s ease-out;
+    }
+  </style>
+  
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active-tab'));
+      
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById('btn-' + tabId).classList.add('active-tab');
+      
+      // Pro-Max Animate new cards
+      gsap.fromTo("#" + tabId + " .animate-element", 
+        { y: 50, opacity: 0, scale: 0.95, rotationX: 5 }, 
+        { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.6, stagger: 0.1, ease: "back.out(1.2)" }
+      );
+    }
+
+    function setFlavor(cardId, flavorName, imageSrc, btnElement, productKey) {
+      const img = document.getElementById('img-' + cardId);
+      
+      // Update Stock dynamically if productKey provided
+      if (productKey && window.globalStockData) {
+          const display = document.getElementById('stock-display-' + cardId);
+          if (display) {
+              display.dataset.product = productKey;
+              if (window.renderSingleStock) {
+                  window.renderSingleStock(display, window.globalStockData[productKey]);
+              }
+          }
+      }
+      
+      // Fade out effect
+      img.style.opacity = '0';
+      img.style.transform = 'scale(0.95)';
+      
+      setTimeout(() => {
+        // Swap image source
+        img.src = imageSrc;
+        
+        // Fade in
+        img.style.opacity = '1';
+        img.style.transform = 'scale(1.1)'; // Keep hover scale effect
+        
+        // Update Label
+        document.getElementById('label-' + cardId).innerText = flavorName;
+        
+        // Update active button styling
+        document.querySelectorAll('.btn-' + cardId).forEach(btn => {
+          btn.classList.remove('ring-2', 'ring-white', 'scale-125');
+          btn.classList.add('opacity-50');
+        });
+        btnElement.classList.add('ring-2', 'ring-white', 'scale-125');
+        btnElement.classList.remove('opacity-50');
+      }, 300);
+    }
+
+        // Initial Animations
+    document.addEventListener("DOMContentLoaded", () => {
+      // Lenis Smooth Scrolling
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Preloader Animation
+      const tlPreloader = gsap.timeline();
+      tlPreloader.to(".preloader-content img", { scale: 1, duration: 0.8, ease: "back.out(1.5)" })
+                 .to(".preloader-text", { y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4")
+                 .to("#preloader", { opacity: 0, duration: 0.8, ease: "power2.inOut", delay: 0.6 })
+                 .set("#preloader", { display: "none" });
+
+      // Init 3D Tilt
+      VanillaTilt.init(document.querySelectorAll(".product-card"), {
+        max: 8,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.15,
+        scale: 1.02
+      });
+
+      // GSAP Hero Entry (Delayed for Preloader)
+      const tl = gsap.timeline({ delay: 1.6 });
+      tl.from(".hero-orb", { scale: 0, opacity: 0, duration: 2, ease: "power3.out" }, 0)
+        .from(".hero-elem", { y: 40, opacity: 0, duration: 1, stagger: 0.15, ease: "power3.out" }, 0.2)
+        .fromTo("#all .animate-element", 
+          { y: 50, opacity: 0, scale: 0.95, rotationX: 15 }, 
+          { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 0.8, stagger: 0.15, ease: "back.out(1.2)" }, 
+          0.6
+        );
+
+      // FAQ Accordion Logic
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const content = item.querySelector('.h-0');
+          const isActive = item.classList.contains('active');
+          
+          // Close all
+          document.querySelectorAll('.faq-item').forEach(el => {
+            el.classList.remove('active');
+            gsap.to(el.querySelector('.h-0'), { height: 0, duration: 0.4, ease: "power2.out" });
+          });
+
+          // If wasn't active, open it
+          if (!isActive) {
+            item.classList.add('active');
+            const targetHeight = content.scrollHeight;
+            gsap.to(content, { height: targetHeight, duration: 0.4, ease: "power2.out" });
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body class="text-zinc-100 antialiased selection:bg-blue-500 selection:text-white relative">
+
+  <!-- Cinematic Preloader -->
+  <div id="preloader" class="fixed inset-0 z-[100] bg-[#050505] flex flex-col items-center justify-center pointer-events-none">
+    <div class="preloader-content relative group">
+      <div class="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-50 animate-pulse"></div>
+      <img src="assets/logo.jpg" alt="Loading" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-white/10 relative z-10 scale-90">
+    </div>
+    <div class="mt-6 overflow-hidden">
+      <span class="preloader-text block text-zinc-500 text-xs font-black tracking-[0.3em] uppercase translate-y-full">Premium Quality</span>
+    </div>
+  </div>
+
+  <!-- Cinematic Background Orbs & Noise -->
+  <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none bg-[#050505]">
+    <div class="fixed inset-0 z-[-5] pointer-events-none opacity-[0.04]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+    <div class="orb hero-orb top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/15"></div>
+    <div class="orb hero-orb bottom-[10%] right-[-10%] w-[40vw] h-[40vw] bg-indigo-600/10" style="animation-delay: -5s;"></div>
+    <div class="orb hero-orb top-[40%] left-[40%] w-[30vw] h-[30vw] bg-purple-600/5" style="animation-delay: -10s;"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="border-b border-white/5 bg-black/40 backdrop-blur-3xl sticky top-0 z-50 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-4 hero-elem">
+        <div class="relative group">
+          <div class="absolute inset-0 bg-blue-500 rounded-full blur-lg opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+          <img src="assets/logo.jpg" alt="Lieferant Straubing Logo" class="w-12 h-12 rounded-full object-cover border border-white/10 relative z-10">
+        </div>
+        <h1 class="text-xl md:text-2xl font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-zinc-200 to-zinc-400">
+          Lieferant <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">Straubing</span>
+        </h1>
+      </div>
+      
+      <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="hero-elem flex items-center gap-2 text-sm font-bold text-white transition-all bg-white/5 hover:bg-white/10 px-6 py-2.5 rounded-full border border-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] backdrop-blur-md">
+        <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+        </svg>
+        <span class="hidden sm:inline">DM für Orders</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Live Ticker / Marquee -->
+  <div class="relative w-full overflow-hidden bg-black/40 border-b border-white/5 backdrop-blur-xl py-2.5 z-40">
+    <div class="absolute top-0 left-0 w-12 md:w-24 h-full bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-12 md:w-24 h-full bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none"></div>
+    <div class="flex whitespace-nowrap animate-marquee w-max">
+      <!-- Group 1 -->
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+      <!-- Group 2 (Duplicate for seamless loop) -->
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+      <div class="flex gap-4 md:gap-8 px-2 md:px-4 text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-zinc-400 uppercase items-center">
+        <span>+++ BLITZSCHNELLE TREFFEN IN STRAUBING</span>
+        <span class="text-blue-500/50">+++</span>
+        <span class="text-zinc-300">100% DISKRETE PRIVATE ÜBERGABE</span>
+        <span class="text-blue-500/50">+++</span>
+        <span>100% SICHER</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="relative overflow-hidden pt-24 pb-20 lg:pt-36 lg:pb-28">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+      <div class="hero-elem inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-xl shadow-2xl">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_10px_#22c55e]"></span>
+        </span>
+        <span class="text-zinc-200 font-semibold text-sm tracking-wide">Live & Online in Straubing</span>
+      </div>
+      <h2 class="hero-elem text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-400 mb-8 tracking-tighter leading-[1.1] drop-shadow-2xl">
+        Premium Vapes,<br>
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500">Liquids & 🍃</span>
+      </h2>
+      <p class="hero-elem text-lg md:text-2xl text-zinc-300 max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+        Exklusive Produkte, cleanes Design und blitzschnelle trefffen in der Stadt. Bestelle jetzt per DM.
+      </p>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-40">
+    
+    <!-- Tabs Navigation -->
+    <div class="hero-elem flex flex-wrap items-center justify-center gap-4 mb-20 relative z-20">
+      <button onclick="switchTab('all')" id="btn-all" class="tab-btn active-tab px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">Alle Produkte</button>
+      <button onclick="switchTab('vapes')" id="btn-vapes" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">🍃 Vapes</button>
+      <button onclick="switchTab('liquids')" id="btn-liquids" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">Liquids</button>
+      <button onclick="switchTab('edibles')" id="btn-edibles" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">🍬 Edibles</button>
+      <button onclick="switchTab('versand')" id="btn-versand" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        Versand
+      </button>
+      <button onclick="switchTab('ablauf')" id="btn-ablauf" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+        Bestellablauf
+      </button>
+      <button onclick="switchTab('zahlung')" id="btn-zahlung" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+        Zahlung
+      </button>
+    </div>
+
+    <!-- Content: ALL -->
+    <div id="all" class="tab-content active grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      
+      <!-- Item: 🍃 Vape -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-8 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/premium-vape.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="🍃 Vape">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Jealousy
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍃 Premium Vape</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+              <span class="opacity-70">(Kein Baller-Liq)</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              <span class="text-blue-300 font-bold block mb-1.5 text-base">Jealousy (Sherbert Bx1 x Gelato 41)</span>
+              Saftige Pflaume, Zuckersirup, fruchtige Blüten & Rosewater. Garantiert 100% reines Extrakt. Streng geprüftes Liquid – absolut kein Spice oder Streckmittel.
+            </p>
+            
+            <a href="https://cdn.shopify.com/s/files/1/0622/2623/5559/files/coa-thp420.pdf?v=1736244592" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-6">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+
+            <!-- Stärken-Level Slider (HTML Native) -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[65%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">65%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">25,00 €</span>
+              <div class="stock-display" data-product="vape"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item: THC Liquid -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/thc-liquid-new.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="🍃 Liquid">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Jealousy
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍃 Liquid</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+              <span class="opacity-70">(Kein Baller-Liq)</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              <span class="text-blue-300 font-bold block mb-1.5 text-base">Jealousy (Sherbert Bx1 x Gelato 41)</span>
+              Saftige Pflaume, fruchtige Blüten & türkischer Honig mit feiner Kush-Note. Der unverwechselbare, komplexe Nachgeschmack der Sorte.
+            </p>
+            <a href="https://cdn.shopify.com/s/files/1/0622/2623/5559/files/coa-thp420.pdf?v=1736244592" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+
+            <!-- Stärken-Level Slider (HTML Native) -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[65%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">65%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">80,00 €</span>
+              <div class="stock-display" data-product="liquid"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item: Bang King Liquid (REAL IMAGES SWAP) -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-black flex items-center justify-center overflow-hidden">
+          <!-- Using the actual uploaded images, defaults to Strawberry Watermelon -->
+          <img id="img-all-1" src="assets/liq-sw-real.jpg" class="img-transition w-full h-full object-cover group-hover:scale-110 glass-card-inner" alt="Bang King Liquid">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+          
+          <!-- Exact Real Image Flavor Selector UI Overlay -->
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/80 backdrop-blur-2xl px-5 py-3 rounded-full border border-white/10 shadow-2xl glass-card-inner">
+            <!-- Strawberry Watermelon -->
+            <button onclick="setFlavor('all-1', 'Strawberry Watermelon', 'assets/liq-sw-real.jpg', this, 'bangking-sw')" class="btn-all-1 w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-rose-700 shadow-[0_0_10px_rgba(236,72,153,0.5)] ring-2 ring-white scale-125 transition-all duration-300"></button>
+            <!-- Strawberry Banana -->
+            <button onclick="setFlavor('all-1', 'Strawberry Banana', 'assets/liq-sb-real.jpg', this, 'bangking-sb')" class="btn-all-1 w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 opacity-50 hover:opacity-100 transition-all duration-300"></button>
+            <!-- Lemon Lime -->
+            <button onclick="setFlavor('all-1', 'Lemon Lime', 'assets/liq-ll-real.jpg', this, 'bangking-ll')" class="btn-all-1 w-7 h-7 rounded-full bg-gradient-to-br from-lime-400 to-green-500 opacity-50 hover:opacity-100 transition-all duration-300"></button>
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <h3 class="text-3xl font-black text-white group-hover:text-pink-400 transition-colors mb-4">Bang King Liquid</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium">
+              Perfekt portioniert mit genau 10 ml pro Flasche. Intensive Geschmacksentwicklung und perfekte Raucherfahrung.<br>
+              <span class="inline-block mt-4 px-4 py-1.5 bg-white/5 rounded-lg text-white text-xs font-bold border border-white/10 shadow-inner">
+                <span id="label-all-1" class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-orange-400">Strawberry Watermelon</span>
+              </span>
+            </p>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Flasche</span>
+              <span class="text-3xl font-black text-white block">8,00 €</span>
+              <div class="stock-display" id="stock-display-all-1" data-product="bangking-sw"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-pink-600 hover:border-pink-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(236,72,153,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Item: Edibles -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/edibles-v2.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Delta 9 Gummy Cherri">
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍬 Delta 9 Gummy Cherri</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-4">
+              Gönn dir das ultimative Erlebnis mit unseren Kirsche-Gummibärchen. Einfach zu dosieren und überall mitzunehmen. Sanfte und ausgewogene Wirkung durch hochwertige Zutaten. Der köstliche Kirschgeschmack verwöhnt deine Geschmacksknospen und sorgt für ein unvergessliches Abenteuer.
+            </p>
+            <a href="https://www.canapuff.de/cdn/shop/files/2026-07-09_Happy_Gummy_Cherri_PL.pdf?v=13911979878229914057" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Packung (5 Stück)</span>
+              <span class="text-3xl font-black text-white block">25,00 €</span>
+              <div class="stock-display" data-product="vape"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Content: VAPES (Filtered) -->
+    <div id="vapes" class="tab-content grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-8 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/premium-vape.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="🍃 Vape">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Jealousy
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍃 Premium Vape</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+              <span class="opacity-70">(Kein Baller-Liq)</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              <span class="text-blue-300 font-bold block mb-1.5 text-base">Jealousy (Sherbert Bx1 x Gelato 41)</span>
+              Saftige Pflaume, Zuckersirup, fruchtige Blüten & Rosewater. Garantiert 100% reines Extrakt. Streng geprüftes Liquid – absolut kein Spice oder Streckmittel.
+            </p>
+            
+            <a href="https://cdn.shopify.com/s/files/1/0622/2623/5559/files/coa-thp420.pdf?v=1736244592" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-6">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+
+            <!-- Stärken-Level Slider (HTML Native) -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[65%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">65%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white">25,00 €</span>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content: LIQUIDS (Filtered) -->
+    <div id="liquids" class="tab-content grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      
+      <!-- Item: THC Liquid -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/thc-liquid-new.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="🍃 Liquid">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Jealousy
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍃 Liquid</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+              <span class="opacity-70">(Kein Baller-Liq)</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              <span class="text-blue-300 font-bold block mb-1.5 text-base">Jealousy (Sherbert Bx1 x Gelato 41)</span>
+              Saftige Pflaume, fruchtige Blüten & türkischer Honig mit feiner Kush-Note. Der unverwechselbare, komplexe Nachgeschmack der Sorte.
+            </p>
+            <a href="https://cdn.shopify.com/s/files/1/0622/2623/5559/files/coa-thp420.pdf?v=1736244592" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+
+            <!-- Stärken-Level Slider (HTML Native) -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[65%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">65%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">80,00 €</span>
+              <div class="stock-display" id="stock-display-all-1" data-product="bangking-sw"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-black flex items-center justify-center overflow-hidden">
+          <img id="img-liq-1" src="assets/liq-sw-real.jpg" class="img-transition w-full h-full object-cover group-hover:scale-110 glass-card-inner" alt="Bang King Liquid">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+          
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/80 backdrop-blur-2xl px-5 py-3 rounded-full border border-white/10 shadow-2xl glass-card-inner">
+            <button onclick="setFlavor('liq-1', 'Strawberry Watermelon', 'assets/liq-sw-real.jpg', this, 'bangking-sw')" class="btn-liq-1 w-7 h-7 rounded-full bg-gradient-to-br from-red-500 to-rose-700 shadow-[0_0_10px_rgba(236,72,153,0.5)] ring-2 ring-white scale-125 transition-all duration-300"></button>
+            <button onclick="setFlavor('liq-1', 'Strawberry Banana', 'assets/liq-sb-real.jpg', this, 'bangking-sb')" class="btn-liq-1 w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 opacity-50 hover:opacity-100 transition-all duration-300"></button>
+            <button onclick="setFlavor('liq-1', 'Lemon Lime', 'assets/liq-ll-real.jpg', this, 'bangking-ll')" class="btn-liq-1 w-7 h-7 rounded-full bg-gradient-to-br from-lime-400 to-green-500 opacity-50 hover:opacity-100 transition-all duration-300"></button>
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <h3 class="text-3xl font-black text-white group-hover:text-pink-400 transition-colors mb-4">Bang King Liquid</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium">
+              Perfekt portioniert mit genau 10 ml pro Flasche. Intensive Geschmacksentwicklung und perfekte Raucherfahrung.<br>
+              <span class="inline-block mt-4 px-4 py-1.5 bg-white/5 rounded-lg text-white text-xs font-bold border border-white/10 shadow-inner">
+                <span id="label-liq-1" class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-orange-400">Strawberry Watermelon</span>
+              </span>
+            </p>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Flasche</span>
+              <span class="text-3xl font-black text-white">8,00 €</span>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-pink-600 hover:border-pink-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(236,72,153,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content: EDIBLES (Filtered) -->
+    <div id="edibles" class="tab-content grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <!-- Item: Edibles -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/edibles-v2.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Delta 9 Gummy Cherri">
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-3">🍬 Delta 9 Gummy Cherri</h3>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/30 rounded-lg text-orange-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
+              <span>Mit echten Cannabinoiden</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-4">
+              Gönn dir das ultimative Erlebnis mit unseren Kirsche-Gummibärchen. Einfach zu dosieren und überall mitzunehmen. Sanfte und ausgewogene Wirkung durch hochwertige Zutaten. Der köstliche Kirschgeschmack verwöhnt deine Geschmacksknospen und sorgt für ein unvergessliches Abenteuer.
+            </p>
+            <a href="https://www.canapuff.de/cdn/shop/files/2026-07-09_Happy_Gummy_Cherri_PL.pdf?v=13911979878229914057" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500/20 transition-colors mb-4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Reinheitszertifikat (0% Spice) ansehen
+            </a>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Packung (5 Stück)</span>
+              <span class="text-3xl font-black text-white block">25,00 €</span>
+              <div class="stock-display" data-product="edibles"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content: VERSAND (Shipping) -->
+    <div id="versand" class="tab-content grid-cols-1 gap-10">
+      <div class="animate-element glass-card rounded-[2.5rem] overflow-hidden p-10 lg:p-16 flex flex-col md:flex-row items-center gap-12 relative">
+        <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-blue-500/10 to-transparent pointer-events-none"></div>
+        <div class="flex-1 z-10">
+          <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <span class="text-zinc-300 font-bold text-sm tracking-widest uppercase">Bundesweiter Versand</span>
+          </div>
+          <h3 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+            Nicht in <br><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">Straubing?</span> Kein Problem.
+          </h3>
+          <p class="text-zinc-400 text-lg leading-relaxed mb-8 max-w-xl">
+            Wir versenden unsere Premium-Produkte auch diskret und sicher in andere Städte. Alles wird sorgfältig verpackt und verlässt unser Lager auf dem schnellsten Weg.
+          </p>
+          <div class="flex items-center gap-6 p-6 rounded-2xl bg-black/40 border border-white/5 max-w-md backdrop-blur-lg">
+            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+              <span class="text-xl font-black text-white">€30</span>
+            </div>
+            <div>
+              <h4 class="text-white font-bold text-lg mb-1">Mindestbestellwert</h4>
+              <p class="text-zinc-500 text-sm">Versand ab 30€ Warenwert möglich.</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 w-full flex justify-center z-10">
+          <div class="relative w-full max-w-sm aspect-square bg-white/5 rounded-full border border-white/10 flex items-center justify-center p-8 backdrop-blur-sm shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <div class="absolute inset-0 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <svg class="w-40 h-40 text-white drop-shadow-2xl z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content: ABLAUF -->
+    <div id="ablauf" class="tab-content grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Step 1 -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 lg:p-10 relative overflow-hidden group flex flex-col">
+        <div class="absolute -right-4 -top-4 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/30 transition-all duration-500"></div>
+        <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 mb-8 text-2xl font-black text-white shadow-lg">1</div>
+        <h4 class="text-2xl font-bold text-white mb-4">Auf Insta anschreiben</h4>
+        <p class="text-zinc-400 text-base leading-relaxed">
+          Schreib uns einfach eine DM auf Instagram (@lieferant.straubing) und sag uns genau, welche Produkte du kaufen möchtest.
+        </p>
+      </div>
+      <!-- Step 2 -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 lg:p-10 relative overflow-hidden group flex flex-col" style="animation-delay: 0.1s;">
+        <div class="absolute -right-4 -top-4 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-500"></div>
+        <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 mb-8 text-2xl font-black text-white shadow-lg">2</div>
+        <h4 class="text-2xl font-bold text-white mb-4">Zahlung klären</h4>
+        <p class="text-zinc-400 text-base leading-relaxed">
+          Du kannst das Geld entweder ganz entspannt vorab per PayPal oder Crypto schicken, oder du entscheidest dich für Barzahlung beim Treffen.
+        </p>
+      </div>
+      <!-- Step 3 -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 lg:p-10 relative overflow-hidden group flex flex-col" style="animation-delay: 0.2s;">
+        <div class="absolute -right-4 -top-4 w-32 h-32 bg-green-500/10 rounded-full blur-3xl group-hover:bg-green-500/30 transition-all duration-500"></div>
+        <div class="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 mb-8 text-2xl font-black text-white shadow-lg">3</div>
+        <h4 class="text-2xl font-bold text-white mb-4">Treffen & Übergabe</h4>
+        <p class="text-zinc-400 text-base leading-relaxed">
+          Wir treffen uns flexibel und diskret in der Stadt (Straubing). Du gibst uns das Bargeld (falls nicht schon bezahlt) und bekommst sofort deine Ware.
+        </p>
+      </div>
+    </div>
+
+    <!-- Content: ZAHLUNG -->
+    <div id="zahlung" class="tab-content grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- PayPal -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 flex flex-col items-center text-center group cursor-pointer hover:-translate-y-2 transition-all duration-300">
+        <div class="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/20 mb-6 group-hover:scale-110 transition-transform">
+          <svg class="w-10 h-10 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/></svg>
+        </div>
+        <h4 class="text-2xl font-black text-white mb-2">PayPal</h4>
+        <p class="text-zinc-400 text-sm">Schnell, sicher und digital. Zahl ganz bequem vorab per PayPal.</p>
+      </div>
+      <!-- Crypto -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 flex flex-col items-center text-center group cursor-pointer hover:-translate-y-2 transition-all duration-300">
+        <div class="w-20 h-20 bg-orange-500/10 rounded-full flex items-center justify-center border border-orange-500/20 mb-6 group-hover:scale-110 transition-transform">
+          <svg class="w-10 h-10 text-orange-400" fill="currentColor" viewBox="0 0 24 24"><path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.665 22.037-1.246 15.525.356 9.096 1.957 2.665 8.468-1.246 14.897.356c6.43 1.602 10.34 8.113 8.74 14.548h.001zm-9.835-5.213c.85-.205 1.576-.565 2.146-1.056.452-.395.82-.93.992-1.6.17-.68.106-1.425-.262-2.036-.363-.6-.94-.97-1.576-1.21-1.037-.393-2.222-.524-3.32-.614l-1.15-.1-1.373 5.564 1.15.1c1.162.083 2.37.195 3.393.948zM9.476 17.58c1.378.136 2.825.26 4.148-.255.67-.258 1.25-.664 1.66-1.243.41-.57.6-1.28.534-1.996-.067-.714-.383-1.385-.85-1.922-.61-.7-1.424-1.11-2.336-1.32-.988-.22-2.03-.314-3.05-.36l-.16.643-1.01 4.09.843.125.22.238zm11.393-5.285c-.015-.06-.032-.12-.047-.18-.014-.055-.028-.112-.044-.168l.245-1.002c.038-.152.072-.303.104-.457.2-1.018.156-2.062-.178-3.04-.336-.98-.934-1.847-1.74-2.483-1.637-1.3-3.766-1.722-5.787-1.954l-.454-1.823-1.66.413.433 1.745c-.417-.102-.84-.2-1.264-.298l-.433-1.746-1.658.413.447 1.796c-.198-.042-.395-.083-.59-.133L5.475 2.518l-1.047 4.22c.62.134 1.21.326 1.765.586l-1.97 7.973c-.563-.16-1.143-.3-1.723-.42l-1.043 4.218 2.593.64c.465.116.93.228 1.4.34l-.454 1.838 1.66-.414.444 1.782c.44-.11.875-.224 1.312-.34l.443 1.782 1.66-.412-.452-1.824c2.5-.528 4.77-1.353 6.545-3.155 1.134-1.144 1.846-2.65 1.933-4.258.05-1.03-.13-2.07-.633-2.96z"/></svg>
+        </div>
+        <h4 class="text-2xl font-black text-white mb-2">Crypto</h4>
+        <p class="text-zinc-400 text-sm">Maximale Privatsphäre. Wir akzeptieren verschiedene gängige Kryptowährungen auf Anfrage.</p>
+      </div>
+      <!-- Bargeld -->
+      <div class="animate-element glass-card rounded-[2rem] p-8 flex flex-col items-center text-center group cursor-pointer hover:-translate-y-2 transition-all duration-300">
+        <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 mb-6 group-hover:scale-110 transition-transform">
+          <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        </div>
+        <h4 class="text-2xl font-black text-white mb-2">Bargeld</h4>
+        <p class="text-zinc-400 text-sm">Der Klassiker. Du bezahlst ganz einfach bar (Cash) bei der Übergabe beim Treffen in Straubing.</p>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-32 pt-20 border-t border-white/5 relative">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_20px_rgba(59,130,246,0.8)]"></div>
+      
+      <div class="max-w-3xl mx-auto">
+        <h3 class="text-3xl md:text-5xl font-black text-center mb-12 text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500">
+          Häufige Fragen
+        </h3>
+        
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="faq-item glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300">
+            <div class="flex items-center justify-between p-6">
+              <h4 class="text-white font-bold text-lg group-hover:text-blue-400 transition-colors">Wie läuft eine Übergabe genau ab?</h4>
+              <svg class="w-6 h-6 text-zinc-500 transform transition-transform duration-300 group-[.active]:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div class="h-0 overflow-hidden transition-all duration-500 opacity-0 group-[.active]:opacity-100">
+              <div class="p-6 pt-0">
+                <p class="text-zinc-400 leading-relaxed text-sm">
+                  Wir machen ganz unkompliziert per DM einen Treffpunkt in Straubing aus. Beide kommen dorthin, du bekommst deine Ware und bezahlst bar (außer du hast schon vorab per PayPal oder Crypto bezahlt). Die Übergabe ist 100% diskret, sicher und stressfrei.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FAQ 2 -->
+          <div class="faq-item glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300">
+            <div class="flex items-center justify-between p-6">
+              <h4 class="text-white font-bold text-lg group-hover:text-blue-400 transition-colors">Wie schnell seid ihr nach der Bestellung da?</h4>
+              <svg class="w-6 h-6 text-zinc-500 transform transition-transform duration-300 group-[.active]:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div class="h-0 overflow-hidden transition-all duration-500 opacity-0 group-[.active]:opacity-100">
+              <div class="p-6 pt-0">
+                <p class="text-zinc-400 leading-relaxed text-sm">
+                  Die genaue Zeit machen wir individuell per DM aus. Wir sind sehr flexibel und richten uns nach dir – so dass es für beide Seiten perfekt passt.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300">
+            <div class="flex items-center justify-between p-6">
+              <h4 class="text-white font-bold text-lg group-hover:text-blue-400 transition-colors">Versendet ihr auch außerhalb von Straubing?</h4>
+              <svg class="w-6 h-6 text-zinc-500 transform transition-transform duration-300 group-[.active]:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div class="h-0 overflow-hidden transition-all duration-500 opacity-0 group-[.active]:opacity-100">
+              <div class="p-6 pt-0">
+                <p class="text-zinc-400 leading-relaxed text-sm">
+                  Ja, absolut! Ab einem Mindestbestellwert von 30 € verschicken wir auch sicher per DHL. Das Paket verlässt unser Lager blitzschnell und 100% diskret verpackt.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item glass-card rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300">
+            <div class="flex items-center justify-between p-6">
+              <h4 class="text-white font-bold text-lg group-hover:text-blue-400 transition-colors">Ist die Qualität wirklich geprüft?</h4>
+              <svg class="w-6 h-6 text-zinc-500 transform transition-transform duration-300 group-[.active]:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div class="h-0 overflow-hidden transition-all duration-500 opacity-0 group-[.active]:opacity-100">
+              <div class="p-6 pt-0">
+                <p class="text-zinc-400 leading-relaxed text-sm">
+                  Unsere Qualität ist perfekt und kompromisslos. Wir können dir sogar offizielle Laborproben zeigen (siehe Zertifikat-Link bei den Produkten). Dort siehst du schwarz auf weiß, wie rein die Extrakte sind – garantiert 0% Spice oder sonstige Streckmittel.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer CTA -->
+  <footer class="border-t border-white/10 bg-black mt-12 py-32 relative overflow-hidden">
+    <div class="orb w-[60vw] h-[60vw] bg-blue-600/10 top-0 left-1/2 -translate-x-1/2"></div>
+    <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+      <h3 class="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter drop-shadow-2xl">Bereit für die <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">Bestellung?</span></h3>
+      <p class="text-zinc-400 mb-12 text-2xl font-light">Schreib uns einfach direkt auf Instagram. Wir antworten sofort und sind blitzschnell bei dir.</p>
+      <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-4 bg-white hover:bg-zinc-200 text-black font-black py-6 px-14 rounded-full transition-all duration-300 transform hover:-translate-y-2 shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:shadow-[0_25px_60px_rgba(255,255,255,0.3)] group">
+        <svg class="w-8 h-8 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+        </svg>
+        <span class="text-xl">DM an @lieferant.straubing</span>
+      </a>
+      <div class="mt-24 pt-8 border-t border-white/10 flex flex-col items-center justify-center gap-3 text-zinc-600 text-sm font-medium">
+        <span>© 2026 Lieferant Straubing</span>
+        <span class="text-xs tracking-widest uppercase opacity-80 font-black text-zinc-500">Premium Quality Only • Schnell und Diskret</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky Bestellen Button -->
+  <div class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50">
+    <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="group relative flex items-center justify-center h-16 w-16 md:h-20 md:w-auto md:px-8 bg-black/60 backdrop-blur-2xl rounded-full border border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.4)] hover:shadow-[0_0_60px_rgba(59,130,246,0.6)] hover:border-blue-500/50 hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+      <!-- Inner Glow -->
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-indigo-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+      
+      <!-- Insta Icon -->
+      <svg class="w-6 h-6 md:w-7 md:h-7 text-blue-400 group-hover:scale-110 group-hover:text-white transition-all duration-500 relative z-10" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+      </svg>
+      
+      <!-- Text (visible on desktop) -->
+      <span class="hidden md:block ml-3 font-black text-white uppercase tracking-widest text-[13px] relative z-10">Jetzt Bestellen</span>
+    </a>
+  </div>
+
+  
+<!-- Stock Management Script -->
+<script>
+  window.globalStockData = {};
+  window.renderSingleStock = function(el, data) {
+      if(!data) return;
+      const aTag = el.parentElement.parentElement.querySelector('a[href*="instagram.com"]');
+
+      if(data.stock > 0) {
+        el.innerHTML = '<span class="text-green-400 font-bold text-xs uppercase tracking-widest mt-1 block">Auf Lager (' + data.stock + ' Stück)</span>';
+        if(aTag) {
+           aTag.classList.remove('opacity-50', 'cursor-not-allowed');
+           aTag.style.pointerEvents = 'auto';
+           // Add back hover states based on product
+           if(el.dataset.product.includes('bangking')) {
+              aTag.classList.add('hover:bg-pink-600', 'hover:border-pink-500');
+           } else {
+              aTag.classList.add('hover:bg-blue-600', 'hover:border-blue-500');
+           }
+        }
+      } else {
+        const restock = data.restockDate ? '<span class="block mt-1 text-[10px] text-zinc-400">Wieder da: ' + data.restockDate + '</span>' : '';
+        el.innerHTML = '<span class="text-red-500 font-bold text-xs uppercase tracking-widest mt-1 block">Ausverkauft</span>' + restock;
+        
+        if(aTag) {
+           aTag.classList.remove('hover:bg-blue-600', 'hover:border-blue-500', 'hover:bg-pink-600', 'hover:border-pink-500');
+           aTag.classList.add('opacity-50', 'cursor-not-allowed');
+           aTag.style.pointerEvents = 'none';
+        }
+      }
+  };
+
+  fetch('/api/stock')
+    .then(r => r.json())
+    .then(stockData => {
+      window.globalStockData = stockData;
+      document.querySelectorAll('.stock-display').forEach(el => {
+        const product = el.dataset.product;
+        window.renderSingleStock(el, stockData[product]);
+      });
+    })
+    .catch(err => console.error("Could not fetch stock", err));
+</script>
+</body>
+</html>
