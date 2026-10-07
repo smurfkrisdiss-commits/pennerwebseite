@@ -7,22 +7,44 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-black text-white font-sans min-h-screen p-8">
-  <div class="max-w-2xl mx-auto bg-zinc-900 rounded-2xl p-8 border border-white/10 shadow-2xl">
-    <h1 class="text-3xl font-black mb-8 text-blue-400">🔥 Admin Panel - Lagerbestand</h1>
+  <div class="max-w-4xl mx-auto bg-zinc-900 rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <h1 class="text-3xl font-black mb-8 text-blue-400">🔥 Admin Panel</h1>
     
-    <div id="login-section" class="mb-8">
+    <div id="login-section" class="mb-8 bg-black/50 p-6 rounded-xl border border-white/5">
       <label class="block text-sm font-bold mb-2">Admin Passwort:</label>
-      <input type="password" id="password" class="w-full bg-black border border-white/20 rounded-lg px-4 py-3 text-white outline-none focus:border-blue-500 mb-4" placeholder="Passwort eingeben...">
+      <input type="password" id="password" class="w-full bg-black border border-white/20 rounded-lg px-4 py-3 text-white outline-none focus:border-blue-500" placeholder="Passwort eingeben...">
     </div>
 
+    <!-- STOCK SECTION -->
+    <h2 class="text-2xl font-black mt-12 mb-6 text-white border-b border-white/10 pb-4">📦 Lagerbestand (Stock)</h2>
     <div id="stock-container" class="space-y-6">
       <!-- Stock items will be injected here -->
     </div>
-
     <button onclick="saveStock()" class="mt-8 w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-colors text-lg shadow-lg shadow-blue-500/20">
-      Änderungen Speichern
+      📦 Stock Speichern
     </button>
     <p id="status-msg" class="text-center mt-4 font-bold hidden"></p>
+
+    <!-- REVIEWS SECTION -->
+    <h2 class="text-2xl font-black mt-16 mb-6 text-emerald-400 border-b border-white/10 pb-4">⭐️ Kundenbewertungen (Reviews)</h2>
+    
+    <!-- Upload New Review -->
+    <div class="bg-black/50 p-6 rounded-xl border border-white/5 mb-8">
+      <h3 class="text-lg font-bold mb-4 text-white">Neue Bewertung hochladen</h3>
+      <div class="flex flex-col gap-4">
+        <input type="file" id="review-upload" accept="image/*" class="text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-emerald-500/20 file:text-emerald-400 hover:file:bg-emerald-500/30">
+        <button onclick="uploadReview()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-colors shadow-lg shadow-emerald-500/20">
+          ⬆️ Bild Hochladen
+        </button>
+        <p id="review-status" class="text-center mt-2 font-bold hidden"></p>
+      </div>
+    </div>
+
+    <!-- Existing Reviews List -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="reviews-container">
+      <!-- Reviews injected here -->
+    </div>
+
   </div>
 
   <script>
@@ -33,27 +55,24 @@
         const res = await fetch('/api/stock');
         currentStock = await res.json();
         renderStock();
-      } catch(e) {
-        alert("Fehler beim Laden!");
-      }
+      } catch(e) {}
     }
 
     function renderStock() {
       const container = document.getElementById('stock-container');
       container.innerHTML = '';
-      
       for(const [key, item] of Object.entries(currentStock)) {
         const html = `
           <div class="bg-black/50 p-6 rounded-xl border border-white/5">
             <h3 class="text-xl font-bold mb-4 text-white">${item.name}</h3>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs text-zinc-400 mb-1">Stückzahl auf Lager (0 = Ausverkauft):</label>
+                <label class="block text-xs text-zinc-400 mb-1">Stückzahl (0 = Ausverkauft):</label>
                 <input type="number" id="stock-${key}" value="${item.stock}" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500">
               </div>
               <div>
-                <label class="block text-xs text-zinc-400 mb-1">Wann wieder da? (z.B. "Morgen"):</label>
-                <input type="text" id="restock-${key}" value="${item.restockDate}" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500" placeholder="Nur wenn 0...">
+                <label class="block text-xs text-zinc-400 mb-1">Wann wieder da?:</label>
+                <input type="text" id="restock-${key}" value="${item.restockDate}" class="w-full bg-zinc-900 border border-white/20 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500">
               </div>
             </div>
           </div>
@@ -64,14 +83,11 @@
 
     async function saveStock() {
       const pw = document.getElementById('password').value;
-      if(!pw) return alert("Bitte Passwort eingeben!");
-
-      // Update state from inputs
+      if(!pw) return alert("Passwort fehlt!");
       for(const key of Object.keys(currentStock)) {
         currentStock[key].stock = parseInt(document.getElementById('stock-'+key).value) || 0;
         currentStock[key].restockDate = document.getElementById('restock-'+key).value || '';
       }
-
       const status = document.getElementById('status-msg');
       status.className = 'text-center mt-4 font-bold text-zinc-400 block';
       status.innerText = 'Speichert...';
@@ -82,23 +98,91 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: pw, newStock: currentStock })
         });
-        
         const data = await res.json();
         if(data.success) {
           status.className = 'text-center mt-4 font-bold text-green-400 block';
-          status.innerText = 'Erfolgreich gespeichert! ✅';
+          status.innerText = 'Erfolgreich gespeichert!';
           setTimeout(() => status.classList.add('hidden'), 3000);
         } else {
           status.className = 'text-center mt-4 font-bold text-red-500 block';
-          status.innerText = data.error || 'Falsches Passwort!';
+          status.innerText = data.error;
         }
-      } catch(e) {
-        status.className = 'text-center mt-4 font-bold text-red-500 block';
-        status.innerText = 'Netzwerkfehler!';
-      }
+      } catch(e) { status.innerText = 'Fehler!'; }
+    }
+
+    // REVIEWS LOGIC
+    async function loadReviews() {
+      try {
+        const res = await fetch('/api/reviews');
+        const reviews = await res.json();
+        const container = document.getElementById('reviews-container');
+        container.innerHTML = '';
+        reviews.forEach(r => {
+          container.innerHTML += `
+            <div class="relative group rounded-xl overflow-hidden border border-white/10 bg-black/50">
+              <img src="${r.path}" class="w-full h-32 object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+              <button onclick="deleteReview('${r.id}')" class="absolute top-2 right-2 bg-red-600/90 text-white p-2 rounded-lg text-xs font-bold shadow-lg hover:bg-red-500 transition-colors">LÖSCHEN</button>
+            </div>
+          `;
+        });
+      } catch(e) {}
+    }
+
+    async function uploadReview() {
+      const pw = document.getElementById('password').value;
+      if(!pw) return alert("Passwort fehlt!");
+      const fileInput = document.getElementById('review-upload');
+      if(fileInput.files.length === 0) return alert("Bitte wähle ein Bild aus!");
+      
+      const file = fileInput.files[0];
+      const status = document.getElementById('review-status');
+      status.className = 'text-center mt-2 font-bold text-zinc-400 block';
+      status.innerText = 'Lädt hoch...';
+
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target.result;
+        try {
+          const res = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw, imageBase64: base64 })
+          });
+          const data = await res.json();
+          if(data.success) {
+            status.className = 'text-center mt-2 font-bold text-green-400 block';
+            status.innerText = 'Bewertung hochgeladen!';
+            fileInput.value = '';
+            setTimeout(() => status.classList.add('hidden'), 3000);
+            loadReviews();
+          } else {
+            status.className = 'text-center mt-2 font-bold text-red-500 block';
+            status.innerText = data.error;
+          }
+        } catch(err) { status.innerText = 'Fehler!'; }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function deleteReview(id) {
+      if(!confirm('Bewertung wirklich löschen?')) return;
+      const pw = document.getElementById('password').value;
+      if(!pw) return alert("Passwort fehlt!");
+      
+      try {
+        const res = await fetch('/api/reviews/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw, id: id })
+        });
+        const data = await res.json();
+        if(data.success) loadReviews();
+        else alert(data.error);
+      } catch(e) { alert("Fehler beim Löschen!"); }
     }
 
     loadStock();
+    loadReviews();
   </script>
 </body>
 </html>
