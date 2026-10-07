@@ -20,7 +20,9 @@ let stockData = {
   "bangking-sw": { name: "Bang King (Strawberry Watermelon)", stock: 10, restockDate: "" },
   "bangking-sb": { name: "Bang King (Strawberry Banana)", stock: 10, restockDate: "" },
   "bangking-ll": { name: "Bang King (Lemon Lime)", stock: 10, restockDate: "" },
-  "edibles": { name: "Delta 9 Gummy Cherri", stock: 5, restockDate: "" }
+  "edibles": { name: "Delta 9 Gummy Cherri", stock: 5, restockDate: "" },
+  "joint-bear": { name: "Joint Big Bad Bear 2g", stock: 10, restockDate: "" },
+  "joint-horchata": { name: "Joint Horchata 2g", stock: 10, restockDate: "" }
 };
 
 // Load from file if exists

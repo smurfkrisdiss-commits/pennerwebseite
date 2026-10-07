@@ -328,6 +328,7 @@
       <button onclick="switchTab('vapes')" id="btn-vapes" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">🍃 Vapes</button>
       <button onclick="switchTab('liquids')" id="btn-liquids" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">Liquids</button>
       <button onclick="switchTab('edibles')" id="btn-edibles" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">🍬 Edibles</button>
+      <button onclick="switchTab('joints')" id="btn-joints" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md">💨 Joints</button>
       <button onclick="switchTab('versand')" id="btn-versand" class="tab-btn px-8 py-3.5 rounded-full text-sm font-bold border border-white/10 text-zinc-300 hover:text-white transition-all bg-white/5 backdrop-blur-md flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         Versand
@@ -535,6 +536,107 @@
         </div>
       </div>
       
+    
+<!-- Item: Joint Horchata -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/joint-horchata.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Joint Horchata">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Horchata
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-4">💨 Horchata Joint</h3>
+            
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              Ein Premium-Joint mit edlem, weichem und cremigem Charakter. Erinnert an das süße Dessert-Getränk Horchata – eine Mischung aus süßer Melone, Zimt, Sahne und Banane, abgerundet durch fruchtige Noten.
+              <br><br>
+              <span class="text-white font-bold block mb-1">Nettogewicht: 2 Gramm</span>
+              Sauber und gleichmäßig gedreht.
+            </p>
+
+            <!-- Stärken-Level Slider -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[80%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
+              <div class="stock-display" data-product="joint-horchata"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+<!-- Item: Joint Bear -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/joint-bear.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Joint Big Bad Bear">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Bear
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-4">💨 Big Bad Bear Joint</h3>
+            
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              Ein sauber gedrehter, hochwertiger Joint mit einem starken Aroma. Frischer Geschmack mit holzigen Noten von Kiefer, verfeinert durch Wermut und Kamille.
+              <br><br>
+              <span class="text-white font-bold block mb-1">Nettogewicht: 2 Gramm</span>
+              Fest, gleichmäßig und von gleichbleibender Qualität.
+            </p>
+
+            <!-- Stärken-Level Slider -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[80%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
+              <div class="stock-display" data-product="joint-bear"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Content: VAPES (Filtered) -->
@@ -719,6 +821,111 @@
               <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Packung (5 Stück)</span>
               <span class="text-3xl font-black text-white block">25,00 €</span>
               <div class="stock-display" data-product="edibles"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- Content: JOINTS (Filtered) -->
+    <div id="joints" class="tab-content hidden grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <!-- Item: Joint Horchata (Tab) -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/joint-horchata.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Joint Horchata">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Horchata
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-4">💨 Horchata Joint</h3>
+            
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              Ein Premium-Joint mit edlem, weichem und cremigem Charakter. Erinnert an das süße Dessert-Getränk Horchata – eine Mischung aus süßer Melone, Zimt, Sahne und Banane, abgerundet durch fruchtige Noten.
+              <br><br>
+              <span class="text-white font-bold block mb-1">Nettogewicht: 2 Gramm</span>
+              Sauber und gleichmäßig gedreht.
+            </p>
+
+            <!-- Stärken-Level Slider -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[80%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
+              <div class="stock-display" data-product="joint-horchata"></div>
+            </div>
+            <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Item: Joint Bear (Tab) -->
+      <div class="animate-element product-card glass-card rounded-[2rem] overflow-hidden group flex flex-col cursor-pointer">
+        <div class="aspect-square w-full relative bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-6 overflow-hidden">
+          <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <img src="assets/joint-bear.jpg" class="img-transition h-full w-auto object-contain group-hover:scale-110 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] glass-card-inner rounded-xl" alt="Joint Big Bad Bear">
+          <div class="absolute top-5 left-5 bg-black/60 backdrop-blur-xl px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white uppercase tracking-widest shadow-2xl glass-card-inner">
+            Strain: Bear
+          </div>
+        </div>
+        <div class="p-8 flex-1 flex flex-col justify-between border-t border-white/5 bg-black/20 glass-card-inner">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2.5 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Laborgeprüft</span>
+              <span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-md text-[9px] font-black uppercase tracking-widest shadow-inner">Kein Spice</span>
+            </div>
+            <h3 class="text-3xl font-black text-white group-hover:text-blue-400 transition-colors mb-4">💨 Big Bad Bear Joint</h3>
+            
+            <p class="text-zinc-400 text-sm leading-relaxed font-medium mb-6">
+              Ein sauber gedrehter, hochwertiger Joint mit einem starken Aroma. Frischer Geschmack mit holzigen Noten von Kiefer, verfeinert durch Wermut und Kamille.
+              <br><br>
+              <span class="text-white font-bold block mb-1">Nettogewicht: 2 Gramm</span>
+              Fest, gleichmäßig und von gleichbleibender Qualität.
+            </p>
+
+            <!-- Stärken-Level Slider -->
+            <div class="mb-4">
+              <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                <span>Relax</span>
+                <span>Strong</span>
+              </div>
+              <div class="relative w-full h-2.5 bg-zinc-800 rounded-full">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-600"></div>
+                <div class="absolute top-1/2 -translate-y-1/2 left-[80%] w-3.5 h-5 bg-zinc-200 rounded-sm border border-zinc-400 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                  <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-white bg-black/80 backdrop-blur-md px-1.5 py-0.5 rounded shadow-xl border border-white/10">80%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
+            <div>
+              <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
+              <div class="stock-display" data-product="joint-bear"></div>
             </div>
             <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>

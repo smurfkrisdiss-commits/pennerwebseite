@@ -28,5 +28,15 @@
     "name": "Delta 9 Gummy Cherri",
     "stock": 5,
     "restockDate": ""
+  },
+  "joint-bear": {
+    "name": "Joint Big Bad Bear 2g",
+    "stock": 10,
+    "restockDate": ""
+  },
+  "joint-horchata": {
+    "name": "Joint Horchata 2g",
+    "stock": 10,
+    "restockDate": ""
   }
 }
