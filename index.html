@@ -574,7 +574,7 @@ Beim Kauf erhältst du den <span class="text-zinc-100 font-bold">Pen + 1 Pod</sp
           <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
             <div>
               <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Packung (5 Stück)</span>
-              <span class="text-3xl font-black text-white block">25,00 €</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
               <div class="stock-display" data-product="edibles"></div>
             </div>
             <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
@@ -807,7 +807,7 @@ Beim Kauf erhältst du den <span class="text-zinc-100 font-bold">Pen + 1 Pod</sp
             <div>
               <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Preis</span>
               <span class="text-3xl font-black text-white block">80,00 €</span>
-              <div class="stock-display" id="stock-display-liq-1" data-product="bangking-sw"></div>
+              <div class="stock-display" data-product="liquid"></div>
             </div>
             <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -840,7 +840,8 @@ Beim Kauf erhältst du den <span class="text-zinc-100 font-bold">Pen + 1 Pod</sp
           <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
             <div>
               <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Flasche</span>
-              <span class="text-3xl font-black text-white">8,00 €</span>
+              <span class="text-3xl font-black text-white block">8,00 €</span>
+              <div class="stock-display" id="stock-display-liq-1" data-product="bangking-sw"></div>
             </div>
             <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-pink-600 hover:border-pink-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(236,72,153,0.6)]">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -879,7 +880,7 @@ Beim Kauf erhältst du den <span class="text-zinc-100 font-bold">Pen + 1 Pod</sp
           <div class="flex items-end justify-between mt-8 pt-6 border-t border-white/5">
             <div>
               <span class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Packung (5 Stück)</span>
-              <span class="text-3xl font-black text-white block">25,00 €</span>
+              <span class="text-3xl font-black text-white block">15,00 €</span>
               <div class="stock-display" data-product="edibles"></div>
             </div>
             <a href="https://instagram.com/lieferant.straubing" target="_blank" rel="noopener noreferrer" class="h-14 w-14 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(37,99,235,0.6)]">
@@ -1219,6 +1220,14 @@ Beim Kauf erhältst du den <span class="text-zinc-100 font-bold">Pen + 1 Pod</sp
   window.renderSingleStock = function(el, data) {
       if(!data) return;
       const aTag = el.parentElement.parentElement.querySelector('a[href*="instagram.com"]');
+
+      // Dynamischer Preis aus Admin Panel
+      const priceSpan = el.parentElement.querySelector('span.text-3xl');
+      if (priceSpan && data.price) {
+        let p = data.price.toString().trim();
+        if (!p.includes('€')) p += ' €';
+        priceSpan.textContent = p;
+      }
 
       if(data.stock > 0) {
         el.innerHTML = '<span class="text-green-400 font-bold text-xs uppercase tracking-widest mt-1 block">Auf Lager (' + data.stock + ' Stück)</span>';

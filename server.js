@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
@@ -16,22 +16,30 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// --- STOCK LOGIC ---
+// --- STOCK & PRICE LOGIC ---
 let stockData = {
-  "vape": { name: "Premium Vape", stock: 15, restockDate: "" },
-  "liquid": { name: "THC Liquid", stock: 8, restockDate: "" },
-  "bangking-sw": { name: "Bang King (Strawberry Watermelon)", stock: 10, restockDate: "" },
-  "bangking-sb": { name: "Bang King (Strawberry Banana)", stock: 10, restockDate: "" },
-  "bangking-ll": { name: "Bang King (Lemon Lime)", stock: 10, restockDate: "" },
-  "edibles": { name: "Delta 9 Gummy Cherri", stock: 5, restockDate: "" },
-  "joint-bear": { name: "Joint Big Bad Bear 2g", stock: 10, restockDate: "" },
-  "joint-horchata": { name: "Joint Horchata 2g", stock: 10, restockDate: "" }
+  "vape": { name: "Premium Vape", stock: 15, price: "25,00 €", restockDate: "" },
+  "liquid": { name: "THC Liquid", stock: 8, price: "80,00 €", restockDate: "" },
+  "bangking-sw": { name: "Bang King (Strawberry Watermelon)", stock: 10, price: "8,00 €", restockDate: "" },
+  "bangking-sb": { name: "Bang King (Strawberry Banana)", stock: 10, price: "8,00 €", restockDate: "" },
+  "bangking-ll": { name: "Bang King (Lemon Lime)", stock: 10, price: "8,00 €", restockDate: "" },
+  "edibles": { name: "Delta 9 Gummy Cherri", stock: 5, price: "15,00 €", restockDate: "" },
+  "joint-bear": { name: "Joint Big Bad Bear 2g", stock: 10, price: "15,00 €", restockDate: "" },
+  "joint-horchata": { name: "Joint Horchata 2g", stock: 10, price: "15,00 €", restockDate: "" }
 };
 
 if (fs.existsSync(stockFile)) {
   try {
     const rawData = fs.readFileSync(stockFile, 'utf8').trim();
-    if (rawData) { stockData = JSON.parse(rawData); }
+    if (rawData) {
+      const parsed = JSON.parse(rawData);
+      // Merge with defaults to ensure price exists
+      for (const k in stockData) {
+        if (parsed[k]) {
+          stockData[k] = { ...stockData[k], ...parsed[k] };
+        }
+      }
+    }
   } catch (err) {
     fs.writeFileSync(stockFile, JSON.stringify(stockData, null, 2));
   }
