@@ -23,6 +23,7 @@ let stockData = {
   "bangking-sw": { name: "Bang King (Strawberry Watermelon)", stock: 10, price: "8,00 €", restockDate: "" },
   "bangking-sb": { name: "Bang King (Strawberry Banana)", stock: 10, price: "8,00 €", restockDate: "" },
   "bangking-ll": { name: "Bang King (Lemon Lime)", stock: 10, price: "8,00 €", restockDate: "" },
+  "savage-v9": { name: "Savage V9 Liquid (Blueberry Cranberry Cherry)", stock: 10, price: "8,00 €", restockDate: "" },
   "edibles": { name: "Delta 9 Gummy Cherri", stock: 5, price: "15,00 €", restockDate: "" },
   "joint-bear": { name: "Joint Big Bad Bear 2g", stock: 10, price: "15,00 €", restockDate: "" },
   "joint-horchata": { name: "Joint Horchata 2g", stock: 10, price: "15,00 €", restockDate: "" }

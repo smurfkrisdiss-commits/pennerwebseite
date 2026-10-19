@@ -46,5 +46,11 @@
     "stock": 10,
     "price": "15,00 €",
     "restockDate": ""
+  },
+  "savage-v9": {
+    "name": "Savage V9 Liquid (Blueberry Cranberry Cherry)",
+    "stock": 10,
+    "price": "8,00 €",
+    "restockDate": ""
   }
 }
